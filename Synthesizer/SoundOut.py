@@ -1,7 +1,7 @@
 import sys
 import pyaudio
 import numpy as np
-
+import time
 from PyQt5.QtCore import pyqtSlot, QCoreApplication
 import threading
 from oscillator import Oscillator
@@ -58,9 +58,13 @@ class SoundOut:
             # print("True")
             return True
         else:
-            self.key_playing = False
+            #self.key_playing = False
+            self.osc.start_adsr_release_time()
             # print("False")
             return False
+
+    def set_key_played_false(self):
+        self.key_playing = False
 
     def is_key_played(self):
         return self.key_playing
@@ -89,7 +93,12 @@ class MainWindow(QtWidgets.QMainWindow):
         oscillator = self.synth.get_osc()
         self.octave_slider = OctaveSlider(self, oscillator)
         VolumeKnob(self, oscillator)
-        ADSRKnob(self, oscillator)
+        #ADSRKnob(self, oscillator, "ATTACK")
+        ADSRKnob(self, oscillator, 570, 70, 500, 30, "ATTACK")
+        ADSRKnob(self, oscillator, 670, 70, 300, 0, "DECAY")
+        #ADSRKnob(self, oscillator, 770, 70, 150, 150, "SUSTAIN")
+        ADSRKnob(self, oscillator, 770, 70, 100, 100, "SUSTAIN")
+        ADSRKnob(self, oscillator, 870, 70, 500, 30, "RELEASE")
         # ADSRKnob2(self, oscillator)
 
         self.setGeometry(500, 500, 800, 500)
@@ -140,6 +149,9 @@ class MainWindow(QtWidgets.QMainWindow):
                 # print("released")
             """
             if event.key() in self.key_dict:
+                # self.synth.get_osc().start_adsr_release_time()
+                # print(self.synth.get_osc().get_adsr().get_release_time())
+                # time.sleep(self.synth.get_osc().get_adsr().get_release_time())
                 state = self.synth.key_state_change()
 
 

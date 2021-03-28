@@ -32,18 +32,28 @@ class Oscillator:
             self.octave = 0.5*0.5
 
     def change_amplitude(self, value):
+        old_amp = self.amplitude
         self.amplitude = (value / 1000)
+        #self.adsr.change_sustain_with_amplitude(self.amplitude / old_amp)
+        print(self.amplitude)
 
     def start_adsr_time(self):
         self.adsr.set_start_time()
 
+    def start_adsr_release_time(self):
+        self.adsr.set_release_start_time()
+
     def get_adsr(self):
         return self.adsr
 
+    def get_amplitude(self):
+        return self.amplitude
+
     def get_wave(self, t):
-        if self.amplitude <= 0.15:
+        adsr_value = self.adsr.get_adsr()
+        if self.amplitude <= 0.15 and adsr_value <= 1:
             # wave = self.amplitude * np.sin(((2 * np.pi * self.freq_hz) / self.rate) * t)
-            wave = (self.adsr.get_adsr() * self.amplitude) * self.wave_type(((2 * np.pi * (self.octave * self.freq_hz)) / self.rate) * t)
+            wave = (adsr_value * self.amplitude) * self.wave_type(((2 * np.pi * (self.octave * self.freq_hz)) / self.rate) * t)
         else:
             wave = 0 * self.wave_type(((2 * np.pi * (self.octave * self.freq_hz)) / self.rate) * t)
         return wave

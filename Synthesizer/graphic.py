@@ -91,25 +91,28 @@ class VolumeKnob(QDial):
 
 class ADSRKnob(QDial):
 
-    def __init__(self, parent, osc):
+    def __init__(self, parent, osc, location_x, location_y, set_max,set_value, adsr_type):
         super(ADSRKnob, self).__init__(parent)
-        self.setGeometry(570, 70, 80, 80)
+        self.setGeometry(location_x, location_y, 80, 80)
         self.setMinimum(0)
-        self.setMaximum(500)
+        self.setMaximum(set_max)
         #self.setTickPosition(QSlider.TicksBelow)
         #self.setTickInterval(1)
-        self.setValue(60)
-        self.valueChanged.connect(self.change_value)
+        self.setValue(set_value)
+        self.valueChanged.connect(lambda i: self.change_value(i, adsr_type))
         vol_label = QLabel(parent)
-        vol_label.setText("ATTACK")
-        vol_label.setGeometry(585, 0, 100, 100)
+        vol_label.setText(adsr_type)
+        vol_label.setGeometry(location_x + 15, 0, 100, 100)
         vol_label.show()
         self.show()
         self.adsr = osc.get_adsr()
 
-    def change_value(self, value):
-        self.adsr.change_attack_time(value)
-        print(value)
+
+    def change_value(self, value, type_is):
+        #self.adsr.change_attack_time(value)
+        self.adsr.change_adsr_knobs(value, type_is)
+
+            # print(value, "RELEASE")
 
 
 """
