@@ -27,14 +27,20 @@ class EnvADSR:
 
 
             if self.press_time <= self.attack_time: # Attack
-                self.adsr_amp = self.press_time / self.attack_time
+                if self.attack_time == 0:
+                    self.adsr_amp = 0
+                else:
+                    self.adsr_amp = self.press_time / self.attack_time
                 #print(self.press_time)
                 return self.adsr_amp
 
             if self.press_time > self.attack_time and self.press_time <= (self.attack_time + self.decay_time):  # Decay
-                self.adsr_amp = (1-((self.press_time - self.attack_time) / self.decay_time))*(self.soundout.get_osc().get_amplitude() - self.sustain_amp*self.soundout.get_osc().get_amplitude())+self.sustain_amp*self.soundout.get_osc().get_amplitude()
+                self.adsr_amp = (1-((self.press_time - self.attack_time) / self.decay_time))*(self.soundout.get_amplitude() - self.sustain_amp*self.soundout.get_amplitude())+self.sustain_amp*self.soundout.get_amplitude()
                 print(self.adsr_amp)
-                return self.adsr_amp / self.soundout.get_osc().get_amplitude()
+                if self.soundout.get_amplitude() == 0:
+                    return 0
+                else:
+                    return self.adsr_amp / self.soundout.get_amplitude()
                 # self.adsr_amp = ((self.press_time - self.attack_time) / self.decay_time) + (self.sustain_amp - self.soundout.get_osc().get_amplitude())
                 # return (self.adsr_amp + self.soundout.get_osc().get_amplitude())/self.soundout.get_osc().get_amplitude()
 
@@ -64,14 +70,21 @@ class EnvADSR:
     def set_start_time(self):
         self.start_time = time.time()
         self.adsr_tail = False
+        print("START TIME SET")
 
     def get_release_time(self):
         return self.release_time
 
     def set_release_start_time(self):
         self.release_start_time = time.time()
-        print("OG START TIME", self.release_start_time)
+        print("RELEASE TIME SET")
         self.adsr_tail = True
+
+    def one_key_at_once(self):
+        self.adsr_tail = False
+
+    def get_adsr_tail(self):
+        return self.adsr_tail
     '''
     def change_attack_time(self, value):
         self.attack_time = value / 100
