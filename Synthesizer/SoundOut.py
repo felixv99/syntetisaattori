@@ -12,7 +12,7 @@ from adsr import EnvADSR
 
 class SoundOut:
 
-    def __init__(self):
+    def __init__(self, gui_class):
         self.rate = 44100
         self.chunk_size = 1024  # Small piece from the wave
         #self.amplitude = 0.3
@@ -29,6 +29,9 @@ class SoundOut:
         self.key_stop = True
         self.osc = Oscillator()
         self.osc2 = Oscillator()
+
+        self.gui_class = gui_class
+
         t = threading.Thread(target=self.play_sound)
         t.start()
 
@@ -42,6 +45,11 @@ class SoundOut:
                 adsr_value = self.adsr.get_adsr()
                 if adsr_value <= 1 and self.amplitude <= 0.15:
                     wave = self.amplitude*adsr_value*(self.osc.get_wave(t)+self.osc2.get_wave(t))
+
+                    # FOR PLOTTING THE SIGNAL
+                    t2 = np.arange(0, 1024)
+                    wave2 = self.amplitude*adsr_value*(self.osc.get_wave(t2)+self.osc2.get_wave(t2))
+                    self.gui_class.get_canvas().plot(wave2, t2)
                 else:
                     wave = 0*self.osc.get_wave(t)
             self.stream.write(wave.astype(np.float32).tostring())
@@ -93,54 +101,89 @@ class SoundOut:
     def is_key_played(self):
         return self.key_playing
 
-from PyQt5.QtWidgets import (QWidget, QApplication, QPushButton)
+from PyQt5.QtWidgets import (QWidget, QApplication, QPushButton, QVBoxLayout, QDialog, QMainWindow, QLabel)
 from PyQt5.Qt import Qt
-from PyQt5 import QtWidgets
-from graphic import WaveSlider, OctaveSlider, VolumeKnob, ADSRKnob
+from PyQt5 import QtWidgets, QtGui, QtCore
+from graphic import WaveSlider, OctaveSlider, VolumeKnob, ADSRKnob, Plotter
+import matplotlib
+matplotlib.use('Qt5Agg')
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.figure import Figure
+import matplotlib.pyplot as plt
+import random
 
 # https://en.wikipedia.org/wiki/Piano_key_frequencies
 
 
-class MainWindow(QtWidgets.QMainWindow):
+class MainWindow(QtWidgets.QMainWindow): #QtWidgets.QMainWindow #QDialog
 
-    def __init__(self, synth):
+    def __init__(self):
         super().__init__()
+        synth = SoundOut(self)
         self.setCentralWidget(QtWidgets.QWidget())
-        # self.initUI()
-        # self.player = 0
         self.keys_held = []
         self.synth = synth
         self.initUI()
         self.key_dict = {Qt.Key_A: 261.6256, Qt.Key_W: 277.1826, Qt.Key_S: 293.6648, Qt.Key_E: 311.1270,
                          Qt.Key_D: 329.6276, Qt.Key_F: 349.2282, Qt.Key_T: 369.9944, Qt.Key_G: 391.9954,
                          Qt.Key_Y: 415.3047, Qt.Key_H: 440.0000, Qt.Key_U: 466.1638, Qt.Key_J: 493.8833}
+
         oscillator = self.synth.get_osc()
         oscillator2 = self.synth.get_osc2()
-        WaveSlider(self, oscillator, 330, 70, 3)
-        OctaveSlider(self, oscillator, 210, 70, 1)
+
+        WaveSlider(self, oscillator, 330, 85, 3)
+        OctaveSlider(self, oscillator, 210, 85, 1)
+
         WaveSlider(self, oscillator2, 330, 280, 3)
         OctaveSlider(self, oscillator2, 210, 280, 1)
+
         VolumeKnob(self, synth)
-        #ADSRKnob(self, oscillator, "ATTACK")
+
         ADSRKnob(self, synth, 570, 70, 500, 30, "ATTACK")
         ADSRKnob(self, synth, 670, 70, 300, 0, "DECAY")
-        #ADSRKnob(self, oscillator, 770, 70, 150, 150, "SUSTAIN")
         ADSRKnob(self, synth, 770, 70, 100, 100, "SUSTAIN")
         ADSRKnob(self, synth, 870, 70, 500, 30, "RELEASE")
-        # ADSRKnob2(self, oscillator)
 
-        self.setGeometry(500, 500, 800, 500)
+        self.setGeometry(500, 500, 1000, 600)
+
+        self.preset_name = QLabel('Preset_name', self)
+        self.preset_name.setGeometry(500, 1, 200, 28)
+        self.preset_name.setStyleSheet(("background-color: lightgray"))
+        self.preset_name.setAlignment(QtCore.Qt.AlignCenter)
+
+         #FOR PLOTTING
+        self.canvas = Plotter(self)
+        self.canvas.move(585, 230)
 
     def initUI(self):
         self.__button = QPushButton('Exit', self)
         self.__button.clicked.connect(self.activate_close)
-        self.show()
+
+        save_preset_but = QPushButton('Save', self)
+        save_preset_but.move(700,0)
+        save_preset_but.clicked.connect(self.save_preset)
+
+        load_preset_but = QPushButton('Load', self)
+        load_preset_but.move(800, 0)
+        load_preset_but.clicked.connect(self.load_preset)
+
+        #self.show()
+
+    def save_preset(self):
+        print("saving preset")
+
+    def load_preset(self):
+        print("loading preset")
+
+    def get_canvas(self):
+        return self.canvas
 
     @pyqtSlot()
     def activate_close(self):  # Ohjelma ei sulkeudu kokonaan äxästä, mutta erillisestä napista kyllä
         self.__button.clicked.connect(self.close)
         self.synth.close_stream()
         QCoreApplication.quit()
+
 
     def keyPressEvent(self, event):
 
@@ -196,7 +239,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    synth = SoundOut()
-    scene = MainWindow(synth)
+    scene = MainWindow()
     scene.show()
     sys.exit(app.exec_())

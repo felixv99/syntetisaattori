@@ -36,7 +36,7 @@ class EnvADSR:
 
             if self.press_time > self.attack_time and self.press_time <= (self.attack_time + self.decay_time):  # Decay
                 self.adsr_amp = (1-((self.press_time - self.attack_time) / self.decay_time))*(self.soundout.get_amplitude() - self.sustain_amp*self.soundout.get_amplitude())+self.sustain_amp*self.soundout.get_amplitude()
-                print(self.adsr_amp)
+                #print(self.adsr_amp)
                 if self.soundout.get_amplitude() == 0:
                     return 0
                 else:
@@ -70,14 +70,14 @@ class EnvADSR:
     def set_start_time(self):
         self.start_time = time.time()
         self.adsr_tail = False
-        print("START TIME SET")
+        #print("START TIME SET")
 
     def get_release_time(self):
         return self.release_time
 
     def set_release_start_time(self):
         self.release_start_time = time.time()
-        print("RELEASE TIME SET")
+        #print("RELEASE TIME SET")
         self.adsr_tail = True
 
     def one_key_at_once(self):
