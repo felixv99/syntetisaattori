@@ -1,7 +1,10 @@
 from PyQt5.Qt import Qt
 from PyQt5.QtWidgets import (QWidget, QSlider, QLabel, QDial)
 from PyQt5.QtCore import Qt
+from PyQt5 import QtGui
 import numpy as np
+import os
+import resources
 
 
 class WaveSlider(QSlider):
@@ -40,12 +43,18 @@ class WaveSlider(QSlider):
 
     def change_value(self, value):
         self.osc.change_wave(value)
-        print(value)
+        #print(value)
+
+    def get_value(self):
+        return self.value()
+
+    def load_value(self, value):
+        self.setValue(value)
 
 
 class OctaveSlider(QSlider):
 
-    def __init__(self, parent, osc,location_x, location_y, set_value):
+    def __init__(self, parent, osc, location_x, location_y, set_value):
         super(OctaveSlider, self).__init__(parent)
         self.setGeometry(location_x, location_y, 40, 120)
         self.setMinimum(-1)
@@ -65,28 +74,55 @@ class OctaveSlider(QSlider):
         self.osc.change_octave(value)
         #print(value)
 
+    def get_value(self):
+        return self.value()
+
+    def load_value(self, value):
+        self.setValue(value)
+
 
 class VolumeKnob(QDial):
 
-    def __init__(self, parent, soundout):
+    def __init__(self, parent, soundout, location_x, location_y, set_value, volume_type, size):
         super(VolumeKnob, self).__init__(parent)
-        self.setGeometry(50, 180, 80, 80)
+        self.setGeometry(location_x, location_y, 80*size, 80*size)
         self.setMinimum(0)
         self.setMaximum(150)
         #self.setTickPosition(QSlider.TicksBelow)
         #self.setTickInterval(1)
-        self.setValue(30)
+        self.setValue(set_value)
         self.valueChanged.connect(self.change_value)
         vol_label = QLabel(parent)
-        vol_label.setText("MASTER\nVOLUME")
-        vol_label.setGeometry(65, 110, 100, 100)
+        vol_label.setText(volume_type)
+        vol_label.setGeometry(location_x+15, location_y - 70, 100, 100)
         vol_label.show()
         self.show()
         self.soundout = soundout
+        self.volume_type = volume_type
+        self.setStyleSheet(("background-color: black"))
+        #img_path = os.path.abspath(os.getcwd())
+        #icon = QtGui.QIcon(":/icons/knob.png")
+        #icon = QtGui.QIcon("M://Coding/PycharmProjects/y2-2021-syntentisaattori/Synthesizer/knob.png")
+        #self.setWindowIcon(QtGui.QIcon("M://Coding/PycharmProjects/y2-2021-syntentisaattori/Synthesizer/knob.png"))
+        #self.setWindowIcon(QtGui.QIcon(':resource/icons/knob.png'))
 
     def change_value(self, value):
-        self.soundout.change_amplitude(value)
-        print(value)
+        if self.volume_type == "MASTER\nVOLUME":
+            self.soundout.change_amplitude(value)
+        elif self.volume_type == "VOL OSC1":
+            self.soundout.get_osc().change_amplitude(value)
+        elif self.volume_type == "VOL OSC2":
+            self.soundout.get_osc2().change_amplitude(value)
+        #print(value)
+
+    #def set_value(self,value):
+        #self.setValue(30)
+
+    def get_value(self):
+        return self.value()
+
+    def load_value(self, value):
+        self.setValue(value)
 
 
 class ADSRKnob(QDial):
@@ -107,10 +143,20 @@ class ADSRKnob(QDial):
         self.show()
         self.adsr = soundout.get_adsr()
 
+        self.test = adsr_type
+        self.setStyleSheet(("background-color: black"))
+
 
     def change_value(self, value, type_is):
         #self.adsr.change_attack_time(value)
         self.adsr.change_adsr_knobs(value, type_is)
+        print(self.test)
+
+    def get_value(self):
+        return self.value()
+
+    def load_value(self, value):
+        self.setValue(value)
 
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -121,26 +167,28 @@ import matplotlib.pyplot as plt
 class Plotter(FigureCanvas):
 
     def __init__(self, parent):
-        self.fig, ax = plt.subplots(figsize=(5, 3),dpi=70)
+        self.fig, self.ax = plt.subplots(figsize=(5, 3),dpi=70)
         super().__init__(self.fig)
         self.setParent(parent)
 
-        ax.set_xticks([])
-        ax.set_xticklabels([])
-        ax.set_yticks([])
-        ax.set_yticklabels([])
+        self.ax.set_xticks([])
+        self.ax.set_xticklabels([])
+        self.ax.set_yticks([])
+        self.ax.set_yticklabels([])
 
-        #ax.spines['top'].set_visible(False)
-        #ax.spines['right'].set_visible(False)
-        #ax.spines['bottom'].set_visible(False)
-        #ax.spines['left'].set_visible(False)
+        #self.ax.spines['top'].set_visible(False)
+        #self.ax.spines['right'].set_visible(False)
+        #self.ax.spines['bottom'].set_visible(False)
+        #self.ax.spines['left'].set_visible(False)
 
         self.fig.subplots_adjust(left=0.05, right=0.95, bottom=0.1, top=0.9)
-
+        self.fig.patch.set_facecolor('whitesmoke')
         wave = np.zeros(1024)
         t = np.arange(0, 1024)
-        self.plot_info, = ax.plot(t, wave, 'b-')
+        self.plot_info, = self.ax.plot(t, wave, 'b-')
+        self.ax.set_facecolor("whitesmoke")
         plt.ion()
+        #self.ax.grid(b=True, which='major', color='b', linestyle='-')
 
     def plot(self, wave, t):
         self.plot_info.set_xdata(t)

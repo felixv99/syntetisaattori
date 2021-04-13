@@ -9,6 +9,7 @@ class Oscillator:
         #self.amplitude = 0.03
         self.octave = 1
         self.wave_type = np.sin
+        self.amplitude = 0
         #self.adsr = EnvADSR(soundout)
 
     def change_wave(self, value):
@@ -49,9 +50,15 @@ class Oscillator:
     '''
 
     def get_wave(self, t):
-        wave = self.wave_type(((2 * np.pi * (self.octave * self.freq_hz)) / self.rate) * t)
+        wave = self.amplitude*self.wave_type(((2 * np.pi * (self.octave * self.freq_hz)) / self.rate) * t)
         return wave
 
     def change_freq(self, changed_freq):
         self.freq_hz = changed_freq
         #print("FREQ CHANGED")
+
+    def get_amplitude(self):
+        return self.amplitude
+
+    def change_amplitude(self, value):
+        self.amplitude = (value / 150)
