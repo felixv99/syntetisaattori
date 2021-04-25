@@ -134,15 +134,17 @@ class MainWindow(QtWidgets.QMainWindow): #QtWidgets.QMainWindow #QDialog
         oscillator2 = self.synth.get_osc2()
         self.setWindowIcon(QtGui.QIcon('knob.png'))
         self.setWindowTitle("Synthesizer by Felix")
-        self.wave_slider1 = WaveSlider(self, oscillator, 330, 85, 3)
-        self.octave_slider1 = OctaveSlider(self, oscillator, 210, 85, 1)
+        #self.setStyleSheet(("background-color: lightgray"))
+        self.setStyleSheet(("background-color: #f3e6bc"))
+        self.wave_slider1 = WaveSlider(self, oscillator, 330, 85, 3, "wave1")
+        self.octave_slider1 = OctaveSlider(self, oscillator, 210, 85, 1, "oct1")
 
-        self.wave_slider2 = WaveSlider(self, oscillator2, 330, 280, 3)
-        self.octave_slider2 = OctaveSlider(self, oscillator2, 210, 280, 1)
+        self.wave_slider2 = WaveSlider(self, oscillator2, 330, 280, 3, "wave2")
+        self.octave_slider2 = OctaveSlider(self, oscillator2, 210, 280, 1, "oct2")
 
         self.master_knob = VolumeKnob(self, synth, 50, 180, 30, "MASTER\nVOLUME", 1)
-        self.osc_vol1 = VolumeKnob(self, synth, 450, 120, 0, "VOL OSC1", 0.8)
-        self.osc_vol2 = VolumeKnob(self, synth, 450, 315, 0, "VOL OSC2", 0.8)
+        self.osc_vol1 = VolumeKnob(self, synth, 455, 120, 0, "VOL OSC1", 0.8)
+        self.osc_vol2 = VolumeKnob(self, synth, 455, 315, 0, "VOL OSC2", 0.8)
 
         self.attack = ADSRKnob(self, synth, 570, 70, 500, 30, "ATTACK")
         self.decay = ADSRKnob(self, synth, 670, 70, 300, 0, "DECAY")
@@ -153,8 +155,9 @@ class MainWindow(QtWidgets.QMainWindow): #QtWidgets.QMainWindow #QDialog
         #self.setStyleSheet("background-color:lightgray")
 
         self.preset_name = QLabel('Init', self)
-        self.preset_name.setGeometry(500, 1, 200, 28)
-        self.preset_name.setStyleSheet(("background-color: lightgray"))
+        self.preset_name.setGeometry(500, 0, 200, 30)
+        #self.preset_name.setStyleSheet(("background-color: #f3ecd6"))
+        self.preset_name.setStyleSheet('QLabel {background-color: #f3ecd6; color: #502c22; border: 1px solid #565a5e;}')
         self.preset_name.setAlignment(QtCore.Qt.AlignCenter)
 
          #FOR PLOTTING
@@ -162,10 +165,12 @@ class MainWindow(QtWidgets.QMainWindow): #QtWidgets.QMainWindow #QDialog
         self.canvas.move(585, 200)
 
     def initUI(self):
-        self.__button = QPushButton('Exit', self)
-        self.__button.clicked.connect(self.activate_close)
+        self.__exit_button = QPushButton('Exit', self)  # virhe???
+        self.__exit_button.clicked.connect(self.activate_close)
+        self.__exit_button.setStyleSheet('QPushButton {background-color: #b57956; color: #f3e6bc;}')
 
         save_preset_but = QPushButton('Save', self)
+        save_preset_but.setStyleSheet('QPushButton {background-color: #b57956; color: #f3e6bc;}')
         save_preset_but.move(700, 0)
         save_preset_but.clicked.connect(self.save_preset)
 
@@ -173,6 +178,7 @@ class MainWindow(QtWidgets.QMainWindow): #QtWidgets.QMainWindow #QDialog
         #save_preset_but.setIconSize(QtCore.QSize(130, 130))
 
         load_preset_but = QPushButton('Load', self)
+        load_preset_but.setStyleSheet('QPushButton {background-color: #b57956; color: #f3e6bc;}')
         load_preset_but.move(800, 0)
         load_preset_but.clicked.connect(self.load_preset)
 
@@ -242,6 +248,7 @@ class MainWindow(QtWidgets.QMainWindow): #QtWidgets.QMainWindow #QDialog
         self.__button.clicked.connect(self.close)
         self.synth.close_stream()
         QCoreApplication.quit()
+        del self.canvas
 
 
     def keyPressEvent(self, event):

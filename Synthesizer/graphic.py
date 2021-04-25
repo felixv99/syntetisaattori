@@ -1,41 +1,48 @@
 from PyQt5.Qt import Qt
 from PyQt5.QtWidgets import (QWidget, QSlider, QLabel, QDial)
+
 from PyQt5.QtCore import Qt
 from PyQt5 import QtGui
 import numpy as np
 import os
 import resources
 
-
 class WaveSlider(QSlider):
 
-    def __init__(self, parent, oscillator, location_x, location_y, set_value):
+    def __init__(self, parent, oscillator, location_x, location_y, set_value, osc_type):
         super(WaveSlider, self).__init__(parent)
-       # wave_slider = QSlider(Qt.Horizontal, self)
-        #wave_slider.setGeometry(30, 40, 200, 30)
-        #wave_slider.valueChanged[int].connect(self.changeValue)
         self.setGeometry(location_x, location_y, 40, 120)
         self.setMinimum(1)
         self.setMaximum(3)
-        self.setTickPosition(QSlider.TicksBelow)
+        #self.setTickPosition(QSlider.TicksBelow)
         self.setTickInterval(1)
         self.setSliderPosition(set_value)
         self.valueChanged.connect(self.change_value)
+
+        if osc_type == "wave1":
+            self.setStyleSheet("QSlider::groove:vertical {background: #f3e3ae; border: 1px solid #565a5e; height: 118; width: 15; margin: 0px; border-radius: 4px;} QSlider::handle:vertical {background: #f5886b; border: 1px solid #565a5e; width: 24px; height: 39px; border-radius: 4px;}")
+        elif osc_type == "wave2":
+            self.setStyleSheet("QSlider::groove:vertical {background: #f3e3ae; border: 1px solid #565a5e; height: 118; width: 15; margin: 0px; border-radius: 4px;} QSlider::handle:vertical {background: #72ae95; border: 1px solid #565a5e; width: 24px; height: 39px; border-radius: 4px;}")
+
         sin_label = QLabel(parent)
         sin_label.setText("SIN")
-        sin_label.setGeometry(location_x + 35, location_y - 45, 100, 100)
+        sin_label.setGeometry(location_x + 35, location_y + 12, 30, 15)
+        sin_label.setStyleSheet("color:#502c22")
         sin_label.show()
         square_label = QLabel(parent)
         square_label.setText("SQUARE")
-        square_label.setGeometry(location_x + 35, location_y + 10, 100, 100)
+        square_label.setGeometry(location_x + 35, location_y + 52, 50, 15)
+        square_label.setStyleSheet("color:#502c22")
         square_label.show()
         saw_label = QLabel(parent)
         saw_label.setText("SAW")
-        saw_label.setGeometry(location_x + 35, location_y + 65, 100, 100)
+        saw_label.setStyleSheet("color:#502c22")
+        saw_label.setGeometry(location_x + 35, location_y + 90, 30, 15)
         saw_label.show()
         wave_label = QLabel(parent)
         wave_label.setText("WAVE")
-        wave_label.setGeometry(location_x + 35, location_y - 70, 100, 100)
+        wave_label.setGeometry(location_x + 15, location_y - 25, 55, 15)
+        wave_label.setStyleSheet("color:#502c22")
         wave_label.show()
         self.show()
         self.osc = oscillator
@@ -54,7 +61,7 @@ class WaveSlider(QSlider):
 
 class OctaveSlider(QSlider):
 
-    def __init__(self, parent, osc, location_x, location_y, set_value):
+    def __init__(self, parent, osc, location_x, location_y, set_value, osc_type):
         super(OctaveSlider, self).__init__(parent)
         self.setGeometry(location_x, location_y, 40, 120)
         self.setMinimum(-1)
@@ -63,12 +70,21 @@ class OctaveSlider(QSlider):
         self.setTickInterval(1)
         self.setSliderPosition(set_value)
         self.valueChanged.connect(self.change_value)
+        self.setStyleSheet(("color: #72ae95"))
         oct_label = QLabel(parent)
         oct_label.setText("OCTAVE")
-        oct_label.setGeometry(location_x, location_y - 70, 100, 100)
+        oct_label.setGeometry(location_x, location_y - 25, 55, 15)
+        #oct_label.setStyleSheet("background-color:lightgray")
+        oct_label.setStyleSheet("color:#502c22")
         oct_label.show()
         self.show()
         self.osc = osc
+
+        if osc_type == "oct1":
+            self.setStyleSheet("QSlider::groove:vertical {background: #f3e3ae; border: 1px solid #565a5e; height: 118; width: 15; margin: 0px; border-radius: 4px;} QSlider::handle:vertical {background: #f5886b; border: 1px solid #565a5e; width: 24px; height: 20px; border-radius: 4px;}")
+        elif osc_type == "oct2":
+            self.setStyleSheet("QSlider::groove:vertical {background: #f3e3ae;border: 1px solid #565a5e; height: 118; width: 15; margin: 0px; border-radius: 4px;} QSlider::handle:vertical {background: #72ae95; border: 1px solid #565a5e; width: 24px; height: 20px; border-radius: 4px;}")
+
 
     def change_value(self, value):
         self.osc.change_octave(value)
@@ -88,23 +104,26 @@ class VolumeKnob(QDial):
         self.setGeometry(location_x, location_y, 80*size, 80*size)
         self.setMinimum(0)
         self.setMaximum(150)
-        #self.setTickPosition(QSlider.TicksBelow)
-        #self.setTickInterval(1)
         self.setValue(set_value)
         self.valueChanged.connect(self.change_value)
+
         vol_label = QLabel(parent)
         vol_label.setText(volume_type)
-        vol_label.setGeometry(location_x+15, location_y - 70, 100, 100)
+        vol_label.setGeometry(location_x, location_y - 30, 70, 28)
+        vol_label.setStyleSheet("color:#502c22")
+        vol_label.setAlignment(Qt.AlignCenter)
         vol_label.show()
+
         self.show()
         self.soundout = soundout
         self.volume_type = volume_type
-        self.setStyleSheet(("background-color: black"))
-        #img_path = os.path.abspath(os.getcwd())
-        #icon = QtGui.QIcon(":/icons/knob.png")
-        #icon = QtGui.QIcon("M://Coding/PycharmProjects/y2-2021-syntentisaattori/Synthesizer/knob.png")
-        #self.setWindowIcon(QtGui.QIcon("M://Coding/PycharmProjects/y2-2021-syntentisaattori/Synthesizer/knob.png"))
-        #self.setWindowIcon(QtGui.QIcon(':resource/icons/knob.png'))
+
+        if volume_type == "VOL OSC2":
+            self.setStyleSheet(("background-color: #72ae95"))
+        elif volume_type == "VOL OSC1":
+            self.setStyleSheet(("background-color: #f5886b"))
+        elif volume_type == "MASTER\nVOLUME":
+            self.setStyleSheet(("background-color: #5a3d2b"))
 
     def change_value(self, value):
         if self.volume_type == "MASTER\nVOLUME":
@@ -138,13 +157,15 @@ class ADSRKnob(QDial):
         self.valueChanged.connect(lambda i: self.change_value(i, adsr_type))
         vol_label = QLabel(parent)
         vol_label.setText(adsr_type)
-        vol_label.setGeometry(location_x + 15, 15, 100, 100)
+        vol_label.setGeometry(location_x + 12, 55, 55, 15)
+        vol_label.setAlignment(Qt.AlignCenter)
+        vol_label.setStyleSheet("color:#502c22")
         vol_label.show()
         self.show()
         self.adsr = soundout.get_adsr()
 
         self.test = adsr_type
-        self.setStyleSheet(("background-color: black"))
+        self.setStyleSheet(("background-color: #f1c972"))
 
 
     def change_value(self, value, type_is):
@@ -182,11 +203,11 @@ class Plotter(FigureCanvas):
         #self.ax.spines['left'].set_visible(False)
 
         self.fig.subplots_adjust(left=0.05, right=0.95, bottom=0.1, top=0.9)
-        self.fig.patch.set_facecolor('whitesmoke')
+        self.fig.patch.set_facecolor('#f3e6bc')
         wave = np.zeros(1024)
         t = np.arange(0, 1024)
-        self.plot_info, = self.ax.plot(t, wave, 'b-')
-        self.ax.set_facecolor("whitesmoke")
+        self.plot_info, = self.ax.plot(t, wave, color='#502c22')
+        self.ax.set_facecolor("#f3ecd6")
         plt.ion()
         #self.ax.grid(b=True, which='major', color='b', linestyle='-')
 
@@ -196,4 +217,3 @@ class Plotter(FigureCanvas):
         #print(wave)
         self.fig.canvas.draw()
         self.fig.canvas.flush_events()
-
