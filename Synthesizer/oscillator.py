@@ -1,16 +1,14 @@
 from scipy import signal
 import numpy as np
-# from adsr import EnvADSR
+
 
 class Oscillator:
     def __init__(self):
         self.rate = 44100
         self.freq_hz = 0
-        #self.amplitude = 0.03
         self.octave = 1
         self.wave_type = np.sin
-        self.amplitude = 0
-        #self.adsr = EnvADSR(soundout)
+        self.amplitude = 0.5
 
     def change_wave(self, value):
         if value == 1:
@@ -31,34 +29,23 @@ class Oscillator:
             self.octave = 4
         elif value == -1:
             self.octave = 0.5*0.5
-    '''
-    def change_amplitude(self, value):
-        old_amp = self.amplitude
-        self.amplitude = (value / 1000)
-        #self.adsr.change_sustain_with_amplitude(self.amplitude / old_amp)
-        print(self.amplitude)
-    '''
-    '''
-    def start_adsr_time(self):
-        self.adsr.set_start_time()
 
-    def start_adsr_release_time(self):
-        self.adsr.set_release_start_time()
-    
-    def get_adsr(self):
-        return self.adsr
-    '''
-
-    def get_wave(self, t):
-        wave = self.amplitude*self.wave_type(((2 * np.pi * (self.octave * self.freq_hz)) / self.rate) * t)
+    def get_wave(self, t):  # WAVE FORMULA y = A * WAVE_TYPE(((2*pi*f)/rate)*T)
+        if self.amplitude <= 1:
+            wave = self.amplitude*self.wave_type(((2 * np.pi * (self.octave * self.freq_hz)) / self.rate) * t)
+        else:
+            wave = 0 * self.wave_type(((2 * np.pi * (self.octave * self.freq_hz)) / self.rate) * t)
+            print("Volume put to zero, you tried to use too loud volume")
         return wave
 
     def change_freq(self, changed_freq):
         self.freq_hz = changed_freq
-        #print("FREQ CHANGED")
 
     def get_amplitude(self):
         return self.amplitude
 
     def change_amplitude(self, value):
-        self.amplitude = (value / 150)
+        if value / 150 <= 1:
+            self.amplitude = (value / 150)
+        else:
+            self.amplitude = 0

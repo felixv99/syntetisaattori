@@ -1,0 +1,12 @@
+MasterVolumeKnob,53
+OscOctaveSlider1,2
+OscWaveSlider1,2
+OscOctaveSlider2,1
+OscWaveSlider2,1
+Attack,0
+Decay,23
+Sustain,80
+Release,25
+OscVol1,84
+OscVol2,150
+LowPass,-1
