@@ -75,7 +75,7 @@ class OctaveSlider(QSlider):
         self.setTickInterval(1)
         self.setSliderPosition(set_value)
         self.valueChanged.connect(self.change_value)
-        self.setStyleSheet(("color: #72ae95"))
+        self.setStyleSheet("color: #72ae95")
 
         oct_label = QLabel(parent)
         oct_label.setText("OCTAVE")

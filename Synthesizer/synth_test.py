@@ -51,18 +51,3 @@ class TestParameters(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-
-#APULINKKEJÄ
-# https://pytest-qt.readthedocs.io/en/1.3.0/
-# http://johnnado.com/pyqt-qtest-example/
-# https://github.com/jmcgeheeiv/pyqttestexample
-# https://www.dlab.ninja/2014/02/testing-your-python-code-with-unittest.html
-# https://plus.cs.aalto.fi/y2/2021/materials_k03/k03_softwaretesting_pythontesting/
-
-#Lowpass
-# https://dsp.stackexchange.com/questions/19084/applying-filter-in-scipy-signal-use-lfilter-or-filtfilt
-# https://dsp.stackexchange.com/questions/49460/apply-low-pass-butterworth-filter-in-python
-# https://stackoverflow.com/questions/25191620/creating-lowpass-filter-in-scipy-understanding-methods-and-units
-# https://swharden.com/blog/2020-09-23-signal-filtering-in-python/
-# https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.butter.html#scipy.signal.butter
-# https://stackoverflow.com/questions/12093594/how-to-implement-band-pass-butterworth-filter-with-scipy-signal-butter

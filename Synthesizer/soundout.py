@@ -1,7 +1,6 @@
 import sys
 import pyaudio
 import numpy as np
-from PyQt5.QtCore import pyqtSlot, QCoreApplication
 import threading
 from oscillator import Oscillator
 from adsr import EnvADSR
@@ -112,6 +111,7 @@ class SoundOut:
 from PyQt5.QtWidgets import (QApplication, QPushButton, QFileDialog, QLabel)
 from PyQt5.Qt import Qt
 from PyQt5 import QtWidgets, QtGui, QtCore
+from PyQt5.QtCore import pyqtSlot, QCoreApplication
 from PyQt5.QtGui import *
 from graphic import *
 import os
@@ -125,7 +125,6 @@ class MainWindow(QtWidgets.QMainWindow):  # QtWidgets.QMainWindow #QDialog
         super().__init__()
         self.app = app
         self.synth = SoundOut(self)
-        # self.setCentralWidget(QtWidgets.QWidget())
         self.keys_held = []
         self.initUI()
         self.key_dict = {Qt.Key_A: 261.6256, Qt.Key_W: 277.1826, Qt.Key_S: 293.6648, Qt.Key_E: 311.1270,

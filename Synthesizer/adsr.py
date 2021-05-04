@@ -25,8 +25,7 @@ class EnvADSR:
     def get_adsr(self):
         if self.adsr_tail == False:
             self.press_time = time.time() - self.start_time
-
-            if self.press_time <= self.attack_time: # Attack
+            if self.press_time <= self.attack_time:  # Attack
                 if self.attack_time == 0:
                     self.adsr_amp = 0
                 else:
@@ -34,12 +33,14 @@ class EnvADSR:
                 self.rel_multiplier = self.adsr_amp
                 return self.adsr_amp
 
-            if  self.attack_time < self.press_time and self.press_time <= (self.attack_time + self.decay_time):  # Decay
+            if self.attack_time < self.press_time and self.press_time <= (self.attack_time + self.decay_time):  # Decay
+
                 self.adsr_amp = (1-((self.press_time - self.attack_time) / self.decay_time)) \
                                 * (self.soundout.get_amplitude() - self.sustain_amp*self.soundout.get_amplitude()) \
                                 + self.sustain_amp*self.soundout.get_amplitude()
 
                 self.rel_multiplier = self.adsr_amp / self.soundout.get_amplitude()
+                #print(self.rel_multiplier)
                 if self.soundout.get_amplitude() == 0:
                     return 0
                 else:
