@@ -9,6 +9,7 @@ Ohjelma on digitaalinen syntetisaattori, joka toimii kahden oskillaattorin avull
 - Documentation -kansiosta löytyy projektin suunnitelma ja dokumentaatio
 
 ## Asennusohje
+- Pythonin versio täytyy olla 3.6.8
 - Tarvittavat Kirjastot:
 
 | Kirjasto | Asennus komento |
