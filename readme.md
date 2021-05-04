@@ -9,7 +9,8 @@ Ohjelma on digitaalinen syntetisaattori, joka toimii kahden oskillaattorin avull
 - Documentation -kansiosta löytyy projektin suunnitelma ja dokumentaatio
 
 ## Asennusohje
--Tarvittavat Kirjastot:
+- Tarvittavat Kirjastot:
+
 | Kirjasto | Asennus komento |
 | ------ | ------ |
 | [PyAudio](https://pypi.org/project/PyAudio/) | pip install PyAudio |
