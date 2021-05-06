@@ -13,7 +13,6 @@ class TestParameters(unittest.TestCase):
     @classmethod
     def setUp(self):
         self.main_w = MainWindow(app)
-        #self.synth = SoundOut(self.main_w)
         self.synth = self.main_w.get_synth()
         self.main_w.show()
         QTest.qWaitForWindowExposed(self.main_w, 5)
@@ -48,6 +47,7 @@ class TestParameters(unittest.TestCase):
         QCoreApplication.quit()
         self.main_w.close()
         app.exit()
+
 
 if __name__ == "__main__":
     unittest.main()

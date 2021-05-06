@@ -38,4 +38,6 @@ Ohjelma on digitaalinen syntetisaattori, joka toimii kahden oskillaattorin avull
 - Aseta alipäästösuodattimen rajataajuus LOW PASS FILTER-säätimestä
 - Kun haluat tallentaa tekemäsi äänen, paina Save-painiketta ja tallenna tiedosto preset-kansioon
 - Kun haluat ladata tekemäsi äänen, paina Load-painiketta ja etsi tallentamasi tiedosto preset-kansiosta
-- Poistu ohjelmasta painamalla Exit-painiketta tai painamalla ruksia oikeassa yläkulmassaälkeen lisäsin suunnitelmaan presettien tallennuksen ja latauksen (5h)
+- Poistu ohjelmasta painamalla Exit-painiketta tai painamalla ruksia oikeassa yläkulmassaälkeen
+
+- Ajamalla synth_test.py voit testata äänenvoimakkuuksien rajojen toimimisen

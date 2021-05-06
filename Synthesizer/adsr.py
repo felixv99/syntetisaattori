@@ -40,7 +40,6 @@ class EnvADSR:
                                 + self.sustain_amp*self.soundout.get_amplitude()
 
                 self.rel_multiplier = self.adsr_amp / self.soundout.get_amplitude()
-                #print(self.rel_multiplier)
                 if self.soundout.get_amplitude() == 0:
                     return 0
                 else:
